@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 3,
+  "kind": "mcp-app",
+  "name": "com.privos.calendar-events-demo",
+  "version": "0.1.0",
+  "title": "Calendar Events (demo)",
+  "description": "Demo: each user's calendar events live in an isolated list; a user sees only their own events, the room owner sees all.",
+  "author": {
+    "name": "Developer"
+  },
+  "permissions": [
+    {
+      "scope": "basic:information",
+      "requirement": "required",
+      "context": "room",
+      "executionContext": "user",
+      "feature": "core.context",
+      "reason": "Identify the active room and the signed-in user so the dashboard knows where it is open."
+    },
+    {
+      "scope": "lists:read",
+      "requirement": "required",
+      "context": "room",
+      "executionContext": "user",
+      "feature": "events.read",
+      "reason": "Find the room calendar list and show the calling user the events they can see."
+    },
+    {
+      "scope": "lists:write",
+      "requirement": "required",
+      "context": "room",
+      "executionContext": "user",
+      "feature": "events.write",
+      "reason": "Create the isolated calendar list on first use and add events assigned to the calling user."
+    }
+  ],
+  "dataPolicy": {
+    "version": "2026-10-01",
+    "retention": "The app stores nothing of its own: calendar events are list items in the workspace room.",
+    "externalProcessing": false
+  },
+  "capabilities": {
+    "verifiedActor": true
+  },
+  "tools": [
+    {
+      "name": "calendar",
+      "title": "Calendar",
+      "description": "Open the calendar events tab of this room: your own events and a form to add one.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "ui": {
+        "resourceUri": "ui://com.privos.calendar-events-demo/dashboard.html"
+      }
+    },
+    {
+      "name": "calendar_events_create",
+      "title": "Create calendar event",
+      "description": "Create a calendar event for the calling user in this room. The event is assigned to the caller; only they and the room owner see it.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Event title"
+          },
+          "start": {
+            "type": "string",
+            "description": "Start time, ISO 8601"
+          },
+          "end": {
+            "type": "string",
+            "description": "End time, ISO 8601"
+          },
+          "notes": {
+            "type": "string",
+            "description": "Notes"
+          },
+          "roomId": {
+            "type": "string",
+            "description": "Room id; defaults to the room the call comes from"
+          }
+        },
+        "required": [
+          "title",
+          "start"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "port": 3011,
+  "resources": {
+    "memoryMb": 256,
+    "cpus": 0.25,
+    "tmpSizeMb": 64
+  },
+  "volumes": [],
+  "stateless": true,
+  "license": {
+    "tiers": [
+      {
+        "id": "default",
+        "name": "Free",
+        "features": []
+      }
+    ]
+  }
+}
