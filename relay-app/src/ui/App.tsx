@@ -23,13 +23,17 @@ interface Item { _id: string; name: string; customFields?: Array<{ fieldId: stri
 
 async function rest<T>(app: McpApp, method: 'GET' | 'POST', path: string, data?: Record<string, unknown>): Promise<T> {
   const res = await app.rest(method === 'GET' ? { method, path, query: data as Record<string, string> } : { method, path, body: data });
-  const body = (res?.body ?? {}) as { success?: boolean; error?: string; message?: string };
-  if (res.statusCode >= 400 || body.success === false) throw new Error(body.error || body.message || `${path} failed (${res.statusCode})`);
+  // The Hub bridge resolves the downstream API.v1 payload itself, not the SDK's typed
+  // `{ statusCode, body }`; accept both. HTTP errors arrive as a rejected promise.
+  const body = (res?.body ?? res ?? {}) as { success?: boolean; error?: string; message?: string };
+  if (res?.statusCode >= 400 || body.success === false) throw new Error(body.error || body.message || `${path} failed (${res.statusCode})`);
   return body as T;
 }
 
 async function findList(app: McpApp, roomId: string): Promise<List | undefined> {
-  const { lists } = await rest<{ lists: List[] }>(app, 'GET', 'lists.listByRoomId', { roomId, text: LIST_NAME });
+  // The Hub matches `text` as a raw regex; escape it so "(demo)" is literal.
+  const text = LIST_NAME.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const { lists } = await rest<{ lists: List[] }>(app, 'GET', 'lists.listByRoomId', { roomId, text });
   return lists.find((l) => l.name === LIST_NAME);
 }
 

@@ -2,7 +2,7 @@
   "schemaVersion": 3,
   "kind": "mcp-app",
   "name": "com.privos.calendar-events-demo",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "title": "Calendar Events (demo)",
   "description": "Demo: each user's calendar events live in an isolated list; a user sees only their own events, the room owner sees all.",
   "author": {

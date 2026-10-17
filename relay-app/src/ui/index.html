@@ -4,6 +4,26 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Calendar Events (demo)</title>
+    <style>
+      /* PrivosAppProvider sets data-theme and the workspace --base-* tokens on :root. */
+      :root { color-scheme: light; }
+      :root[data-theme='dark'] { color-scheme: dark; }
+      body {
+        margin: 0;
+        color: var(--base-text-primary, CanvasText);
+        background: var(--base-bg-main, Canvas);
+      }
+      input, textarea, button {
+        font: inherit;
+        color: inherit;
+        background: var(--base-bg-surface, Field);
+        border: 1px solid var(--base-border, GrayText);
+        border-radius: var(--base-radius-md, 4px);
+        padding: 4px 8px;
+      }
+      button { cursor: pointer; }
+      button:disabled { opacity: 0.6; cursor: default; }
+    </style>
   </head>
   <body>
     <div id="root"></div>
